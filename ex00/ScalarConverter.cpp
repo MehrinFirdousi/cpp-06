@@ -40,7 +40,7 @@ ScalarConverter::~ScalarConverter()
 
 int getType(std::string literal)
 {
-	char *end;
+	// char *end;
 
 	// strtol(literal.c_str(), &end, 0);
 	// if (!*end)
@@ -48,14 +48,55 @@ int getType(std::string literal)
 	// strtod(literal.c_str(), &end);
 	// if (!*end)
 	// 	return DOUBLE;
-	strtof(literal.c_str(), &end);
-	if (!*end)
-		return FLOAT;
+	// strtof(literal.c_str(), &end);
+	// if (!*end)
+		// return FLOAT;
 	// if (literal[0] > 31 && literal[0] < 127)
-	return CHAR;
+	// return CHAR;
+
+	int		i;
+	float	f;
+	double	d;
+	char	c;
+	std::stringstream ss(literal);
+
+	if (ss >> f && ss.peek() == 'f')
+	{
+		std::cout << "Float: " << f << std::endl;
+		return FLOAT;
+	}
+	ss.clear();
+	ss.seekg(0);
+	// ss << literal;
+	std::cout << "after float " << ss.str() << std::endl;
+	if (ss >> d)
+	{
+		std::cout << "Double: " << d << std::endl;
+		return DOUBLE;
+	}
+	ss.clear();
+	ss.seekg(0);
+	// ss << literal;
+	std::cout << "after double " << ss.str() << std::endl;
+	if (ss >> i)
+	{
+		std::cout << "Int: " << i << std::endl;
+		return INT;
+	}
+	ss.clear();
+	ss.seekg(0);
+	// ss << literal;
+	std::cout << "after int " << ss.str() << std::endl;
+	if (ss >> c)
+	{
+		std::cout << "Char: " << c << std::endl;
+		return CHAR;
+	}
+	std::cout << "after char " << ss.str() << std::endl;
+	return (CHAR);
 }
 
 void ScalarConverter::convert(std::string literal)
 {
-	std::cout << "type is " << type(getType(literal)) << std::endl;
+	std::cout << "type is " << getType(literal) << std::endl;
 }

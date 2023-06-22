@@ -15,8 +15,10 @@
 int main(int argc, char **argv)
 {
 	if (argc != 2)
-		return (EXIT_FAILURE);
-	
+	{
+		std::cout << "Invalid number of arguments" << std::endl;
+		return (1);
+	}
 	ScalarConverter::convert(argv[1]);
-	return (EXIT_SUCCESS);
+	return (0);
 }

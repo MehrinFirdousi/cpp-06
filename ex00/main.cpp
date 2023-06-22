@@ -1,29 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ScalarConverter.hpp                                :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mfirdous <mfirdous@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/12 18:48:12 by mfirdous          #+#    #+#             */
-/*   Updated: 2023/06/22 16:32:04 by mfirdous         ###   ########.fr       */
+/*   Created: 2023/06/22 15:56:03 by mfirdous          #+#    #+#             */
+/*   Updated: 2023/06/22 16:47:29 by mfirdous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SCALAR_CONVERTER_HPP
-# define SCALAR_CONVERTER_HPP
+#include "ScalarConverter.hpp"
 
-# include <iostream>
-# include <cstdlib>
-
-class ScalarConverter
+int main(int argc, char **argv)
 {
-	public:
-		ScalarConverter();
-		ScalarConverter(const ScalarConverter& converter);
-		ScalarConverter& operator=(const ScalarConverter& converter);
-		~ScalarConverter();
-		static void convert(std::string literal);
-};
-
-#endif
+	if (argc != 2)
+		return (EXIT_FAILURE);
+	
+	ScalarConverter::convert(argv[1]);
+	return (EXIT_SUCCESS);
+}

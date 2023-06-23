@@ -60,24 +60,20 @@ int getType(std::string literal)
 	char	c;
 	std::stringstream ss(literal);
 
-	if (ss >> f && ss.peek() == 'f')
+	if (ss.str().find('.') != std::string::npos && ss >> f && ss.peek() == 'f')
 	{
 		std::cout << "Float: " << f << std::endl;
 		return FLOAT;
 	}
 	ss.clear();
 	ss.seekg(0);
-	// ss << literal;
-	std::cout << "after float " << ss.str() << std::endl;
-	if (ss >> d)
+	if (ss.str().find('.') != std::string::npos && ss >> d)
 	{
 		std::cout << "Double: " << d << std::endl;
 		return DOUBLE;
 	}
 	ss.clear();
 	ss.seekg(0);
-	// ss << literal;
-	std::cout << "after double " << ss.str() << std::endl;
 	if (ss >> i)
 	{
 		std::cout << "Int: " << i << std::endl;
@@ -85,14 +81,11 @@ int getType(std::string literal)
 	}
 	ss.clear();
 	ss.seekg(0);
-	// ss << literal;
-	std::cout << "after int " << ss.str() << std::endl;
 	if (ss >> c)
 	{
 		std::cout << "Char: " << c << std::endl;
 		return CHAR;
 	}
-	std::cout << "after char " << ss.str() << std::endl;
 	return (CHAR);
 }
 

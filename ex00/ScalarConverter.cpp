@@ -38,6 +38,18 @@ ScalarConverter::~ScalarConverter()
 	std::cout << "ScalarConverter destructor called" << std::endl;
 }
 
+bool isFloat(std::string str)
+{
+	size_t	point_index;
+
+	point_index = str.find('.');
+	if (point_index == std::string::npos || point_index >= str.length() - 2)
+		return false;
+	if (str[str.length() - 1] != 'f')
+		return false;
+	return true;
+}
+
 int getType(std::string literal)
 {
 	// char *end;
@@ -58,13 +70,15 @@ int getType(std::string literal)
 	float	f;
 	double	d;
 	char	c;
-	std::stringstream ss(literal);
+	std::istringstream ss(literal);
 
 	if (ss.str().find('.') != std::string::npos && ss >> f && ss.peek() == 'f')
 	{
 		std::cout << "Float: " << f << std::endl;
 		return FLOAT;
 	}
+	
+	std::cout << "next char = " << ss.peek() << std::endl;
 	ss.clear();
 	ss.seekg(0);
 	if (ss.str().find('.') != std::string::npos && ss >> d)
@@ -91,5 +105,5 @@ int getType(std::string literal)
 
 void ScalarConverter::convert(std::string literal)
 {
-	std::cout << "type is " << getType(literal) << std::endl;
+	getType(literal);
 }

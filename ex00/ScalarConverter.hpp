@@ -17,14 +17,16 @@
 # include <sstream>
 # include <string>
 # include <cstdlib>
+# include <cmath>
 
 class ScalarConverter
 {
-	public:
+	private:
 		ScalarConverter();
 		ScalarConverter(const ScalarConverter& converter);
 		ScalarConverter& operator=(const ScalarConverter& converter);
 		~ScalarConverter();
+	public:
 		static void convert(std::string literal);
 };
 

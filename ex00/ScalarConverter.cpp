@@ -42,12 +42,61 @@ bool isFloat(std::string str)
 {
 	size_t	point_index;
 
-	point_index = str.find('.');
-	if (point_index == std::string::npos || point_index >= str.length() - 2)
-		return false;
 	if (str[str.length() - 1] != 'f')
 		return false;
+	point_index = str.find('.');
+	if (point_index == std::string::npos || point_index >= str.length() - 2) // point was not found OR the num is of the form xxxx.f and not xxxx.xf
+		return false;
 	return true;
+}
+
+bool	convertFloat(std::string literal)
+{
+	std::string str = literal;
+	char *end;
+	float f;
+	const float max_safe = 2147483647.f; // 2^31 - 128 
+    const float low_safe = -2147483648.f; // -2^31 
+
+	if (!isFloat(literal))
+		return (false);
+	str.erase(str.length() - 1, 1);
+	f = strtof(str.c_str(), &end);
+	if (*end)
+		return false;
+
+	std::cout << "char: ";
+	if (f > 31 && f < 127)
+		std::cout << static_cast<char>(f) << std::endl;
+	else if (f > 255)
+		std::cout << "impossible" << std::endl;
+	else
+		std::cout << "non displayable" << std::endl;
+	
+	std::cout << "int: ";
+	if (f > max_safe || f < low_safe)
+		std::cout << "impossible" << std::endl;
+	else
+		std::cout << static_cast<int>(f) << std::endl;
+	
+	std::cout << "float: ";
+	if (fmod(f, 1) == 0)
+		std::cout << f << ".0f" << std::endl;
+	else
+		std::cout << f << "f" << std::endl;
+	
+	std::cout << "double: " << static_cast<double>(f) << std::endl;
+	return true;
+}
+
+bool convertDouble(std::string literal)
+{
+	char *end;
+	float f;
+	const float max_safe = 2147483647.f; // 2^31 - 128 
+    const float low_safe = -2147483648.f; // -2^31 
+
+	
 }
 
 int getType(std::string literal)
@@ -67,20 +116,12 @@ int getType(std::string literal)
 	// return CHAR;
 
 	int		i;
-	float	f;
 	double	d;
 	char	c;
 	std::istringstream ss(literal);
-
-	if (ss.str().find('.') != std::string::npos && ss >> f && ss.peek() == 'f')
-	{
-		std::cout << "Float: " << f << std::endl;
-		return FLOAT;
-	}
 	
-	std::cout << "next char = " << ss.peek() << std::endl;
-	ss.clear();
-	ss.seekg(0);
+	if (convertFloat(literal))
+		return FLOAT;
 	if (ss.str().find('.') != std::string::npos && ss >> d)
 	{
 		std::cout << "Double: " << d << std::endl;

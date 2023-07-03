@@ -182,42 +182,15 @@ bool convertFromChar(std::string literal)
 	return true;
 }
 
-int getType(std::string literal)
-{
-	if (convertFromFloat(literal))
-		return FLOAT;
-	if (convertFromDouble(literal))
-		return DOUBLE;
-	if (convertFromInt(literal))
-		return INT;
-	if (convertFromChar(literal))
-		return CHAR;
-	return (INVALID);
-}
-
-void	temp_display_type(int type)
-{
-	switch (type)
-	{
-		case FLOAT:
-			std::cout << "Type was float" << std::endl;
-			break;
-		case DOUBLE:
-			std::cout << "Type was double" << std::endl;
-			break;
-		case INT:
-			std::cout << "Type was int" << std::endl;
-			break;
-		case CHAR:
-			std::cout << "Type was char" << std::endl;
-			break;
-		default:
-			std::cout << "Invalid input" << std::endl;
-	}
-}
-
 void ScalarConverter::convert(std::string literal)
 {
-	int type = getType(literal);
-	temp_display_type(type);
+	if (convertFromFloat(literal))
+		return ;
+	if (convertFromDouble(literal))
+		return ;
+	if (convertFromInt(literal))
+		return ;
+	if (convertFromChar(literal))
+		return ;
+	std::cout << "Invalid input" << std::endl;
 }

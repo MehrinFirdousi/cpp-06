@@ -12,8 +12,6 @@
 
 # include "ScalarConverter.hpp"
 
-//			0		1		2	3		4
-enum type {FLOAT, DOUBLE, INT, CHAR, INVALID};
 # define SCI_LIMIT 999999
 
 ScalarConverter::ScalarConverter()

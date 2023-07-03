@@ -12,8 +12,9 @@
 
 # include "ScalarConverter.hpp"
 
-//			0		1		2	  3		4
-enum type {CHAR, NON_CHAR, INT, FLOAT, DOUBLE};
+//			0		1		2	3		4
+enum type {FLOAT, DOUBLE, INT, CHAR, INVALID};
+# define SCI_LIMIT 999999
 
 ScalarConverter::ScalarConverter()
 {
@@ -50,101 +51,173 @@ bool isFloat(std::string str)
 	return true;
 }
 
-bool	convertFloat(std::string literal)
+void	printFloat(float f)
+{
+	std::cout << "float: " << f;
+	if (fmod(f, 1) == 0 && (f <= SCI_LIMIT && f >= -SCI_LIMIT)) // if the float doesn't have a decimal portion and it wont become scientific notation
+		std::cout << ".0f" << std::endl;
+	else
+		std::cout << "f" << std::endl;
+}
+
+void	printDouble(double d)
+{
+	std::cout << "double: " << d;
+	if (fmod(d, 1) == 0 && (d <= SCI_LIMIT && d >= -SCI_LIMIT))
+		std::cout << ".0";
+	std::cout << std::endl;
+}
+
+void	printInt(double num)
+{
+	const float max_safe = 2147483520.f; // 2^31 - 128 - this is the last safe value where float can be cast to int without overflow
+    const float min_safe = -2147483648.f; // -2^31 
+
+	std::cout << "int: ";
+	if (num > max_safe || num < min_safe)
+		std::cout << "impossible" << std::endl;
+	else
+		std::cout << static_cast<int>(num) << std::endl;
+}
+
+void	printChar(double c)
+{
+	std::cout << "char: ";
+	if (c > 31 && c < 127)
+		std::cout << static_cast<char>(c) << std::endl;
+	else if (c > 255 || c < 0)
+		std::cout << "impossible" << std::endl;
+	else
+		std::cout << "non displayable" << std::endl;
+}
+
+bool isPseudoLiteral(std::string literal)
+{
+	if (literal.compare("-inf") == 0 || literal.compare("+inf") == 0 || literal.compare("nan") == 0)
+	{
+		std::cout << "char: impossible" << std::endl;
+		std::cout << "int: impossible" << std::endl;
+		std::cout << "float: " << literal << "f" << std::endl;
+		std::cout << "double: " << literal << std::endl;
+		return true;
+	}
+	else if (literal.compare("-inff") == 0 || literal.compare("+inff") == 0 || literal.compare("nanf") == 0)
+	{
+		std::cout << "char: impossible" << std::endl;
+		std::cout << "int: impossible" << std::endl;
+		std::cout << "float: " << literal << std::endl;
+		std::cout << "double: " << literal.substr(0, literal.length() - 1) << std::endl;
+		return true;
+	}
+	return false;
+}
+
+bool	convertFromFloat(std::string literal)
 {
 	std::string str = literal;
 	char *end;
 	float f;
-	const float max_safe = 2147483647.f; // 2^31 - 128 
-    const float low_safe = -2147483648.f; // -2^31 
-
-	if (!isFloat(literal))
-		return (false);
+	
+	if (isPseudoLiteral(literal))
+		return true;
+	if (!isFloat(str))
+		return false;
 	str.erase(str.length() - 1, 1);
 	f = strtof(str.c_str(), &end);
 	if (*end)
 		return false;
-
-	std::cout << "char: ";
-	if (f > 31 && f < 127)
-		std::cout << static_cast<char>(f) << std::endl;
-	else if (f > 255)
-		std::cout << "impossible" << std::endl;
-	else
-		std::cout << "non displayable" << std::endl;
-	
-	std::cout << "int: ";
-	if (f > max_safe || f < low_safe)
-		std::cout << "impossible" << std::endl;
-	else
-		std::cout << static_cast<int>(f) << std::endl;
-	
-	std::cout << "float: ";
-	if (fmod(f, 1) == 0)
-		std::cout << f << ".0f" << std::endl;
-	else
-		std::cout << f << "f" << std::endl;
-	
-	std::cout << "double: " << static_cast<double>(f) << std::endl;
+	printChar(f);
+	printInt(f);
+	printFloat(f);
+	printDouble(static_cast<double>(f));
 	return true;
 }
 
-bool convertDouble(std::string literal)
+bool convertFromDouble(std::string literal)
 {
 	char *end;
-	float f;
-	const float max_safe = 2147483647.f; // 2^31 - 128 
-    const float low_safe = -2147483648.f; // -2^31 
+	double d;
+	size_t point_index;
 
-	
+	if (isPseudoLiteral(literal))
+		return true;
+	point_index = literal.find('.');
+	if (point_index == std::string::npos || point_index == literal.length() - 1) // point was not found OR the point is at the end of the string
+		return false;	
+	d = strtod(literal.c_str(), &end);
+	if (*end)
+		return false;
+	printChar(d);
+	printInt(d);
+	printFloat(static_cast<float>(d));
+	printDouble(d);
+	return (true);
+}
+
+bool convertFromInt(std::string literal)
+{
+	int i;
+	std::istringstream ss(literal);
+	if (literal.find_first_not_of("-0123456789") != std::string::npos)
+		return false;
+	if (!(ss >> i))
+		return (false);
+	printChar(i);
+	std::cout << "int: " << i << std::endl;
+	printFloat(static_cast<float>(i));
+	printDouble(static_cast<double>(i));
+	return true;
+}
+
+bool convertFromChar(std::string literal)
+{
+	char	c;
+	if (literal.length() != 1)
+		return false;
+	c = literal[0];
+	std::cout << "char: " << c << std::endl;
+	std::cout << "int: " << static_cast<int>(c) << std::endl;
+	std::cout << "float: " << static_cast<float>(c) << ".0f" << std::endl;
+	std::cout << "double: " << static_cast<double>(c) << ".0" << std::endl;
+	return true;
 }
 
 int getType(std::string literal)
 {
-	// char *end;
-
-	// strtol(literal.c_str(), &end, 0);
-	// if (!*end)
-	// 	return INT;
-	// strtod(literal.c_str(), &end);
-	// if (!*end)
-	// 	return DOUBLE;
-	// strtof(literal.c_str(), &end);
-	// if (!*end)
-		// return FLOAT;
-	// if (literal[0] > 31 && literal[0] < 127)
-	// return CHAR;
-
-	int		i;
-	double	d;
-	char	c;
-	std::istringstream ss(literal);
-	
-	if (convertFloat(literal))
+	if (convertFromFloat(literal))
 		return FLOAT;
-	if (ss.str().find('.') != std::string::npos && ss >> d)
-	{
-		std::cout << "Double: " << d << std::endl;
+	if (convertFromDouble(literal))
 		return DOUBLE;
-	}
-	ss.clear();
-	ss.seekg(0);
-	if (ss >> i)
-	{
-		std::cout << "Int: " << i << std::endl;
+	if (convertFromInt(literal))
 		return INT;
-	}
-	ss.clear();
-	ss.seekg(0);
-	if (ss >> c)
-	{
-		std::cout << "Char: " << c << std::endl;
+	if (convertFromChar(literal))
 		return CHAR;
+	return (INVALID);
+}
+
+void	temp_display_type(int type)
+{
+	switch (type)
+	{
+		case FLOAT:
+			std::cout << "Type was float" << std::endl;
+			break;
+		case DOUBLE:
+			std::cout << "Type was double" << std::endl;
+			break;
+		case INT:
+			std::cout << "Type was int" << std::endl;
+			break;
+		case CHAR:
+			std::cout << "Type was char" << std::endl;
+			break;
+		default:
+			std::cout << "Invalid input" << std::endl;
 	}
-	return (CHAR);
 }
 
 void ScalarConverter::convert(std::string literal)
 {
-	getType(literal);
+	int type = getType(literal);
+	temp_display_type(type);
 }

@@ -12,8 +12,6 @@
 
 # include "ScalarConverter.hpp"
 
-# define SCI_LIMIT 999999
-
 ScalarConverter::ScalarConverter()
 {
 	std::cout << "ScalarConverter default constructor called" << std::endl;

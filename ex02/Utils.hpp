@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #ifndef UTILS_HPP
-# define UILS_HPP
+# define UTILS_HPP
 
 # include "Base.hpp"
 # include "A.hpp"
